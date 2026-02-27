@@ -1,12 +1,19 @@
 package org.example.demo.service;
 
+import org.example.demo.dto.AgendaDto;
 import org.example.demo.model.Agenda;
+
 import java.util.List;
 
 public interface AgendaService {
-    List<Agenda> getAll();
-    Agenda getById(Integer id);
+
+    List<AgendaDto> getDtoByServicio(Integer servicioId);
+
+    List<AgendaDto> getDtoByProfesor(Integer profesorId);
+
     Agenda save(Agenda agenda);
-    void delete(Integer id);
-    Agenda update(Integer id, Agenda agenda);
+
+    Agenda reservar(Integer idAgenda, Integer idAlumno);
+
+    AgendaDto toDto(Agenda a);
 }

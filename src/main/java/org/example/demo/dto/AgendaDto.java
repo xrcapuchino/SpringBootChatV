@@ -1,16 +1,19 @@
 package org.example.demo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@NoArgsConstructor @AllArgsConstructor
 public class AgendaDto {
     private Integer idAgenda;
-    private String fechaserv;
-    private Double pago;
-    private Integer usuarioId;
+    private String fecha;      // "yyyy-MM-dd"
+    private String hora;       // "HH:mm:ss"
+    private String estado;     // "DISPONIBLE" / "RESERVADO"
+    private Integer servicioId;
+    private Integer profesorId;
+    private Integer alumnoId;
+    private String tituloServicio;
+    private String nombreAlumno;
 }

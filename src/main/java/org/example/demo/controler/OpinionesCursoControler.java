@@ -13,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Saber_Share/api")
+@RequestMapping("/api")
 @RestController
 @AllArgsConstructor
 public class OpinionesCursoControler {
@@ -61,7 +61,7 @@ public class OpinionesCursoControler {
         OpinionesCurso saved = service.save(entidad);
 
         return ResponseEntity
-                .created(URI.create("/Amaury/api/opiniones_curso/" + saved.getIdOpiniones()))
+                .created(URI.create("/api/opiniones_curso/" + saved.getIdOpiniones()))
                 .body(toDto(saved));
     }
 

@@ -6,7 +6,6 @@ import org.example.demo.model.OpinionServicio;
 import org.example.demo.model.Servicio;
 import org.example.demo.model.Usuario;
 import org.example.demo.service.OpinionServicioService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Saber_Share/api")
+@RequestMapping("/api")
 @RestController
 @AllArgsConstructor
 public class OpinionServicioControler {
@@ -62,7 +61,7 @@ public class OpinionServicioControler {
         OpinionServicio saved = service.save(entidad);
 
         return ResponseEntity
-                .created(URI.create("/Amaury/api/opinion_servicio/" + saved.getIdOpiniones()))
+                .created(URI.create("/api/opinion_servicio/" + saved.getIdOpiniones()))
                 .body(toDto(saved));
     }
 
@@ -96,7 +95,7 @@ public class OpinionServicioControler {
                 .comentario(o.getComentOps())
                 .calificacion(o.getCalOps())
                 .usuarioId(o.getUsuario() != null ? o.getUsuario().getIdUsuario() : null)
-                .servicioId(o.getServicio() != null ? o.getServicio().getIdServicios() : null) // Ojo: getIdServicios()
+                .servicioId(o.getServicio() != null ? o.getServicio().getIdServicios() : null)
                 .build();
     }
 
@@ -105,7 +104,7 @@ public class OpinionServicioControler {
                 .comentOps(dto.getComentario())
                 .calOps(dto.getCalificacion())
                 .usuario(Usuario.builder().idUsuario(dto.getUsuarioId()).build())
-                .servicio(Servicio.builder().idServicios(dto.getServicioId()).build()) // Ojo: idServicios()
+                .servicio(Servicio.builder().idServicios(dto.getServicioId()).build())
                 .build();
     }
 }

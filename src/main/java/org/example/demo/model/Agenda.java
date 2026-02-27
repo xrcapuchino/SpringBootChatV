@@ -2,28 +2,38 @@ package org.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "Agenda")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Agenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idAgenda")
     private Integer idAgenda;
 
-    @Column(name = "fechaserv")
-    private LocalDate fechaserv;
+    @Column(nullable = false)
+    private java.time.LocalDate fecha;
 
-    @Column(name = "pago")
-    private Double pago;
+    @Column(nullable = false)
+    private java.time.LocalTime hora;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Usuario_idUsuario")
-    private Usuario usuario;
+    @Column(nullable = false)
+    private String estado; // DISPONIBLE / RESERVADA
+
+    @ManyToOne
+    @JoinColumn(name = "Servicio_idServicios", nullable = false)
+    private Servicio servicio;
+
+    @ManyToOne
+    @JoinColumn(name = "Profesor_idUsuario", nullable = false)
+    private Usuario profesor;
+
+    @ManyToOne
+    @JoinColumn(name = "Alumno_idUsuario")
+    private Usuario alumno;
 }

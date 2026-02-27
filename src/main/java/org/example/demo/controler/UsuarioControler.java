@@ -11,21 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Saber_Share/api")
 @RestController
+@RequestMapping("/api")
 @AllArgsConstructor
 public class UsuarioControler {
 
     private final UsuarioService usuarioService;
 
-
-    @RequestMapping("/usuario")
+    @GetMapping("/usuario")
     public ResponseEntity<List<UsuarioDto>> lista(
-            // Agregamos el parametro 'correo' opcional
             @RequestParam(name = "user", defaultValue = "", required = false) String user,
             @RequestParam(name = "correo", defaultValue = "", required = false) String correo
     ) {
-
         List<Usuario> usuarios = usuarioService.getAll();
         if (usuarios == null || usuarios.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -39,12 +36,10 @@ public class UsuarioControler {
             stream = stream.filter(u -> correo.equals(u.getCorreoUsu()));
         }
 
-        return ResponseEntity.ok(
-                stream.map(this::toDto).collect(Collectors.toList())
-        );
+        return ResponseEntity.ok(stream.map(this::toDto).collect(Collectors.toList()));
     }
 
-    @RequestMapping("/usuario/{id}")
+    @GetMapping("/usuario/{id}")
     public ResponseEntity<UsuarioDto> getById(@PathVariable Integer id) {
         Usuario u = usuarioService.getById(id);
         if (u == null) return ResponseEntity.notFound().build();
@@ -57,6 +52,7 @@ public class UsuarioControler {
                 .idRol(1)
                 .nombre("USUARIO")
                 .build();
+
         Usuario u = Usuario.builder()
                 .usuUsu(dto.getUser())
                 .nomUsu(dto.getNombre())
@@ -66,6 +62,7 @@ public class UsuarioControler {
                 .telUsu(dto.getTelefono())
                 .rol(rolPorDefecto)
                 .build();
+
         usuarioService.save(u);
         return ResponseEntity.ok(toDto(u));
     }

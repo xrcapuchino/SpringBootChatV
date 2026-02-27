@@ -12,55 +12,63 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Saber_Share/api")
 @RestController
+@RequestMapping("/api/curso")
 @AllArgsConstructor
 public class CursoControler {
 
     private final CursoService cursoService;
 
-    @GetMapping("/curso")
+    @GetMapping
     public ResponseEntity<List<CursoDto>> lista() {
         List<Curso> cursos = cursoService.getAll();
-        if (cursos == null || cursos.isEmpty()) return ResponseEntity.notFound().build();
+        if (cursos == null || cursos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        return ResponseEntity.ok(
-                cursos.stream().map(this::toDto).collect(Collectors.toList())
-        );
+        List<CursoDto> dtos = cursos.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping("/curso/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CursoDto> getById(@PathVariable Integer id) {
         Curso c = cursoService.getById(id);
-        if (c == null) return ResponseEntity.notFound().build();
+        if (c == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(toDto(c));
     }
 
-    @PostMapping("/curso")
+    @PostMapping
     public ResponseEntity<CursoDto> save(@RequestBody CursoDto dto) {
-        // Usaren ti getUsuarioId() imbes a getUsuario_idUsuario()
-        if (dto.getUsuarioId() == null)
+        if (dto == null || dto.getUsuarioId() == null) {
             return ResponseEntity.badRequest().build();
+        }
 
         Curso entidad = Curso.builder()
-                .titCur(dto.getTitulo())       // <--- Nagan manipud Android
+                .titCur(dto.getTitulo())
                 .descCur(dto.getDescripcion())
                 .preCur(dto.getPrecio())
                 .calfCur(dto.getCalificacion())
-                .foto(dto.getFoto())           // <--- Daytoy ti 'path'
+                .foto(dto.getFoto())
                 .usuario(Usuario.builder().idUsuario(dto.getUsuarioId()).build())
                 .build();
 
         Curso saved = cursoService.save(entidad);
+
         return ResponseEntity
-                .created(URI.create("/Saber_Share/api/curso/" + saved.getIdCurso()))
+                .created(URI.create("/api/curso/" + saved.getIdCurso()))
                 .body(toDto(saved));
     }
 
-    @PutMapping("/curso/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CursoDto> update(@PathVariable Integer id, @RequestBody CursoDto dto) {
-        if (dto.getUsuarioId() == null)
+        if (dto == null || dto.getUsuarioId() == null) {
             return ResponseEntity.badRequest().build();
+        }
 
         Curso cambios = Curso.builder()
                 .titCur(dto.getTitulo())
@@ -72,11 +80,14 @@ public class CursoControler {
                 .build();
 
         Curso up = cursoService.update(id, cambios);
-        if (up == null) return ResponseEntity.notFound().build();
+        if (up == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(toDto(up));
     }
 
-    @DeleteMapping("/curso/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         cursoService.delete(id);
         return ResponseEntity.noContent().build();
@@ -85,12 +96,15 @@ public class CursoControler {
     private CursoDto toDto(Curso c) {
         String nombreAutor = "Desconocido";
         if (c.getUsuario() != null) {
-            nombreAutor = c.getUsuario().getNomUsu() + " " + c.getUsuario().getApeUsu();
+            String nom = c.getUsuario().getNomUsu() != null ? c.getUsuario().getNomUsu() : "";
+            String ape = c.getUsuario().getApeUsu() != null ? c.getUsuario().getApeUsu() : "";
+            nombreAutor = (nom + " " + ape).trim();
+            if (nombreAutor.isEmpty()) nombreAutor = "Desconocido";
         }
 
         return CursoDto.builder()
                 .idCurso(c.getIdCurso())
-                .titulo(c.getTitCur())       // <--- Mapeo inverso
+                .titulo(c.getTitCur())
                 .descripcion(c.getDescCur())
                 .precio(c.getPreCur())
                 .calificacion(c.getCalfCur())

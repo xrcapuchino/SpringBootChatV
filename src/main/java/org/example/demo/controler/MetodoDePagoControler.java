@@ -1,6 +1,5 @@
 package org.example.demo.controler;
 
-
 import lombok.AllArgsConstructor;
 import org.example.demo.dto.MetodoDePagoDto;
 import org.example.demo.model.MetodoDePago;
@@ -13,15 +12,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Saber_Share/api")
 @RestController
+@RequestMapping("/api/metodoPago")
 @AllArgsConstructor
 public class MetodoDePagoControler {
 
     private final MetodoDePagoService metodoDePagoService;
 
-
-    @RequestMapping("/metodoPago")
+    @GetMapping
     public ResponseEntity<List<MetodoDePagoDto>> lista() {
         List<MetodoDePago> metodos = metodoDePagoService.getAll();
         if (metodos == null || metodos.isEmpty()) {
@@ -35,18 +33,14 @@ public class MetodoDePagoControler {
         );
     }
 
-
-    @RequestMapping("/metodoPago/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MetodoDePagoDto> getById(@PathVariable Integer id) {
         MetodoDePago m = metodoDePagoService.getById(id);
-        if (m == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (m == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(toDto(m));
     }
 
-
-    @PostMapping("/metodoPago")
+    @PostMapping
     public ResponseEntity<MetodoDePagoDto> save(@RequestBody MetodoDePagoDto dto) {
 
         MetodoDePago m = MetodoDePago.builder()
@@ -62,12 +56,10 @@ public class MetodoDePagoControler {
                 .build();
 
         metodoDePagoService.save(m);
-
         return ResponseEntity.ok(toDto(m));
     }
 
-
-    @PutMapping("/metodoPago/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<MetodoDePagoDto> update(@PathVariable Integer id,
                                                   @RequestBody MetodoDePagoDto dto) {
 
@@ -84,20 +76,16 @@ public class MetodoDePagoControler {
                 .build();
 
         MetodoDePago actualizado = metodoDePagoService.update(id, nuevo);
-        if (actualizado == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (actualizado == null) return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(toDto(actualizado));
     }
 
-
-    @DeleteMapping("/metodoPago/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         metodoDePagoService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 
     private MetodoDePagoDto toDto(MetodoDePago m) {
         return MetodoDePagoDto.builder()
